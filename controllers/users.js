@@ -35,7 +35,7 @@ const getUsers = async (req, res) => { // get '/users/'
 
 const createUser = async (req, res) => { // post '/users/'
   try {
-    const user = await new User(req.body).save();
+    const user = await User.create(req.body);
     res.status(CREATED).send(user);
   } catch (err) {
     if (err.errors.name.name === 'ValidatorError') {
