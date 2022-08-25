@@ -36,7 +36,7 @@ const getUsers = async (req, res) => { // get '/users/'
 const createUser = async (req, res) => { // post '/users/'
   try {
     const user = await new User(req.body).save();
-    res.status(CREATED).send({ message: 'Пользователь успешно создан', user });
+    res.status(CREATED).send(user);
   } catch (err) {
     if (err.errors.name.name === 'ValidatorError') {
       res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя', ...err });
