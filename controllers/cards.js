@@ -19,9 +19,9 @@ const createCard = async (req, res) => { // post '/cards/'
   const { name, link } = req.body;
   try {
     const card = await new Card({ name, link, owner: req.user._id }).save();
-    res.status(CREATED).send({ message: 'Карточка успешно создана', card });
+    res.status(CREATED).send(card);
   } catch (err) {
-    if (err.errors.name.name === 'ValidatorError') {
+    if (err._message === 'card validation failed') {
       res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки', ...err });
       return;
     }

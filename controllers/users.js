@@ -45,9 +45,8 @@ const getUsers = async (req, res) => {
 
 const createUser = async (req, res) => {
   // post '/users/'
-  const { name, about, avatar } = req.body;
   try {
-    const user = await User.create({ name, about, avatar });
+    const user = await new User(req.body).save();
     res.status(CREATED).send(user);
   } catch (err) {
     if (err._message === 'user validation failed') {
@@ -80,7 +79,7 @@ const updateUserProfile = async (req, res) => {
     }
     res.status(OK).send(user);
   } catch (err) {
-    if (err.errors.name.name === 'ValidatorError') {
+    if (err._message === 'user validation failed') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректные данные при обновлении профиля',
         ...err,
@@ -110,7 +109,7 @@ const updateUserAvavtar = async (req, res) => {
     }
     res.status(OK).send(user);
   } catch (err) {
-    if (err.errors.name.name === 'ValidatorError') {
+    if (err._message === 'user validation failed') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректные данные при обновлении аватара',
         ...err,
