@@ -6,7 +6,8 @@ const BAD_REQUEST = 400;
 const NOT_FOUND = 404;
 const INTERNAL_SERVER_ERROR = 500;
 
-const getUserById = async (req, res) => { // get '/users/:id'
+const getUserById = async (req, res) => {
+  // get '/users/:id'
   const { id } = req.params;
   try {
     const user = await User.findById(id);
@@ -30,7 +31,8 @@ const getUserById = async (req, res) => { // get '/users/:id'
   }
 };
 
-const getUsers = async (req, res) => { // get '/users/'
+const getUsers = async (req, res) => {
+  // get '/users/'
   try {
     const users = await User.find({});
     res.status(OK).send(users);
@@ -41,19 +43,18 @@ const getUsers = async (req, res) => { // get '/users/'
   }
 };
 
-const createUser = async (req, res) => { // post '/users/'
+const createUser = async (req, res) => {
+  // post '/users/'
   const { name, about, avatar } = req.body;
   try {
     const user = await User.create({ name, about, avatar });
     res.status(CREATED).send(user);
   } catch (err) {
-    if (err.errors.name.name === 'ValidatorError') {
-      res
-        .status(BAD_REQUEST)
-        .send({
-          message: 'Переданы некорректные данные при создании пользователя',
-          ...err,
-        });
+    if (err._message === 'user validation failed') {
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при создании пользователя',
+        ...err,
+      });
       return;
     }
     res
@@ -62,7 +63,8 @@ const createUser = async (req, res) => { // post '/users/'
   }
 };
 
-const updateUserProfile = async (req, res) => { // patch '/users/me'
+const updateUserProfile = async (req, res) => {
+  // patch '/users/me'
   const { name, about } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
@@ -79,12 +81,10 @@ const updateUserProfile = async (req, res) => { // patch '/users/me'
     res.status(OK).send(user);
   } catch (err) {
     if (err.errors.name.name === 'ValidatorError') {
-      res
-        .status(BAD_REQUEST)
-        .send({
-          message: 'Переданы некорректные данные при обновлении профиля',
-          ...err,
-        });
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при обновлении профиля',
+        ...err,
+      });
       return;
     }
     res
@@ -93,7 +93,8 @@ const updateUserProfile = async (req, res) => { // patch '/users/me'
   }
 };
 
-const updateUserAvavtar = async (req, res) => { // patch '/users/me/avatar'
+const updateUserAvavtar = async (req, res) => {
+  // patch '/users/me/avatar'
   const { avatar } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
@@ -110,12 +111,10 @@ const updateUserAvavtar = async (req, res) => { // patch '/users/me/avatar'
     res.status(OK).send(user);
   } catch (err) {
     if (err.errors.name.name === 'ValidatorError') {
-      res
-        .status(BAD_REQUEST)
-        .send({
-          message: 'Переданы некорректные данные при обновлении аватара',
-          ...err,
-        });
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при обновлении аватара',
+        ...err,
+      });
       return;
     }
     res
