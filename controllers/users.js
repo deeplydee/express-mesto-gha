@@ -69,7 +69,7 @@ const updateUserProfile = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { name, about },
-      { new: true }
+      { new: true, runValidators: true, upsert: true }
     );
     if (!user) {
       res
@@ -79,7 +79,7 @@ const updateUserProfile = async (req, res) => {
     }
     res.status(OK).send(user);
   } catch (err) {
-    if (err._message === 'user validation failed') {
+    if (err._message === 'Validation failed') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректные данные при обновлении профиля',
         ...err,
@@ -99,7 +99,7 @@ const updateUserAvavtar = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { avatar },
-      { new: true }
+      { new: true, runValidators: true, upsert: true }
     );
     if (!user) {
       res
@@ -109,7 +109,7 @@ const updateUserAvavtar = async (req, res) => {
     }
     res.status(OK).send(user);
   } catch (err) {
-    if (err._message === 'user validation failed') {
+    if (err._message === 'Validation failed') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректные данные при обновлении аватара',
         ...err,
