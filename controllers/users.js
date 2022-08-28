@@ -47,11 +47,9 @@ const createUser = async (req, res) => { // post '/users/'
     res.status(CREATED).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res
-        .status(BAD_REQUEST)
-        .send({
-          message: 'Переданы некорректные данные при создании пользователя',
-        });
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при создании пользователя',
+      });
       return;
     }
     res
@@ -77,11 +75,9 @@ const updateUserProfile = async (req, res) => { // patch '/users/me'
     res.send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res
-        .status(BAD_REQUEST)
-        .send({
-          message: 'Переданы некорректные данные при обновлении профиля',
-        });
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при обновлении профиля',
+      });
       return;
     }
     if (err.kind === 'ObjectId') {
@@ -97,7 +93,11 @@ const updateUserProfile = async (req, res) => { // patch '/users/me'
 const updateUserAvatar = async (req, res) => { // patch '/users/me/avatar'
   const { avatar } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(req.user._id, { avatar });
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { avatar },
+      { new: true, runValidators: true },
+    );
     if (!user) {
       res
         .status(NOT_FOUND)
@@ -107,11 +107,9 @@ const updateUserAvatar = async (req, res) => { // patch '/users/me/avatar'
     res.send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res
-        .status(BAD_REQUEST)
-        .send({
-          message: 'Переданы некорректные данные при обновлении аватара',
-        });
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при обновлении аватара',
+      });
       return;
     }
     if (err.kind === 'ObjectId') {
