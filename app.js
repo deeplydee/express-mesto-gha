@@ -14,7 +14,7 @@ async function main() {
   });
 
   await app.listen(PORT);
-
+  // eslint-disable-next-line no-console
   console.log(`App listening on port ${PORT}`);
 }
 
@@ -27,5 +27,7 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use(express.json());
 
 app.use(routes);

@@ -6,13 +6,13 @@ const {
   getUsers,
   createUser,
   updateUserProfile,
-  updateUserAvavtar,
+  updateUserAvatar,
 } = require('../controllers/users');
 
 userRoutes.get('/:id', getUserById);
 userRoutes.get('/', getUsers);
-userRoutes.post('/', express.json(), createUser);
-userRoutes.patch('/me', express.json(), updateUserProfile);
-userRoutes.patch('/me/avatar', express.json(), updateUserAvavtar);
+userRoutes.post('/', createUser);
+userRoutes.patch('/me', updateUserProfile);
+userRoutes.patch('/me/avatar', updateUserAvatar);
 
 module.exports = { userRoutes };
