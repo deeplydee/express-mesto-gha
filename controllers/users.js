@@ -162,6 +162,28 @@ const login = async (req, res) => {
   }
 };
 
+const getUserInfo = async (req, res) => { // get '/users/me'
+  try {
+    const user = await User.findById({ _id: req.user._id });
+    if (!user) {
+      res
+        .status(NOT_FOUND)
+        .send({ message: 'Пользователь по указанному id не найден' });
+      return;
+    }
+    // res.send(user);
+    res.send({ data: user });
+  } catch (err) {
+    if (err.name === 'CastError') {
+      res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
+      return;
+    }
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .send({ message: 'Внутренняя ошибка сервера' });
+  }
+};
+
 module.exports = {
   getUserById,
   getUsers,
@@ -169,4 +191,5 @@ module.exports = {
   updateUserProfile,
   updateUserAvatar,
   login,
+  getUserInfo,
 };
