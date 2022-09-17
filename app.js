@@ -1,5 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+
+const auth = require('./middlewares/auth');
+const { createUser, login } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
 
@@ -20,14 +24,12 @@ async function main() {
 
 main();
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6303b04d0b745fc3ab41cf6e',
-  };
-
-  next();
-});
-
 app.use(express.json());
+app.use(cookieParser());
+
+app.post('/signin', login);
+app.post('/signup', createUser);
+
+app.use(auth);
 
 app.use(routes);

@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
@@ -59,17 +60,23 @@ const createUser = async (req, res) => { // post '/users/'
       email,
       password: hashedPassword,
     });
-    res.status(CREATED).send(user);
+    res.status(CREATED).send({
+      data: user.toJSON(),
+    });
   } catch (err) {
     if (err.name === 'ValidationError') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректные данные при создании пользователя',
       });
-      return;
+    } else if (err.code === 11000) {
+      res.status(BAD_REQUEST).send({
+        message: 'Пользователь с таким email уже существует',
+      });
+    } else {
+      res.status(INTERNAL_SERVER_ERROR).send({
+        message: 'Внутренняя ошибка сервера',
+      });
     }
-    res
-      .status(INTERNAL_SERVER_ERROR)
-      .send({ message: 'Внутренняя ошибка сервера' });
   }
 };
 
@@ -137,10 +144,29 @@ const updateUserAvatar = async (req, res) => { // patch '/users/me/avatar'
   }
 };
 
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findUserByCredentials(email, password);
+    const token = await jwt.sign(
+      { _id: user._id },
+      'SECRET',
+      { expiresIn: '7d' },
+    );
+    res.cookie('jwt', token, {
+      maxAge: 3600000 * 24 * 7,
+      httpOnly: true,
+    }).send({ data: user.toJSON() });
+  } catch (err) {
+    res.status(401).send({ message: err.message });
+  }
+};
+
 module.exports = {
   getUserById,
   getUsers,
   createUser,
   updateUserProfile,
   updateUserAvatar,
+  login,
 };
