@@ -126,7 +126,7 @@ const login = async (req, res, next) => {
       httpOnly: true,
     }).send({ data: user.toJSON() });
   } catch (err) {
-    next(new UnauthorizedError('Необходима авторизация'));
+    next(new UnauthorizedError('Неправильные почта или пароль'));
   }
 };
 
