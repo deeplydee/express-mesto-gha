@@ -66,6 +66,6 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.use((req, res, next) => {
+app.use('*', (req, res, next) => {
   next(new NotFoundError('Не найдено'));
 });
