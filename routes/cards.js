@@ -51,7 +51,7 @@ cardRoutes.delete(
   '/:cardId/likes',
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().required().alphanum().max(24),
+      cardId: Joi.string().required().length(24).hex(),
     }),
   }),
   dislikeCard,
