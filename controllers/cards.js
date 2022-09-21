@@ -82,7 +82,7 @@ const dislikeCard = async (req, res, next) => { // delete '/cards/:cardId/likes'
       next(new NotFoundError('Передан несуществующий id карточки'));
       return;
     }
-    res.send({ message: 'У карточки снят лайк', card });
+    res.send({ message: 'У карточки снят лайк' });
   } catch (err) {
     if (err.name === 'CastError') {
       next(new BadRequestError('Переданы некорректные данные для снятия лайка'));
