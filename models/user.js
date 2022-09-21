@@ -8,14 +8,14 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    default: 'Jacques Cousteau',
+    default: 'Жак-Ив Кусто',
     minlength: 2,
     maxlength: 30,
   },
   about: {
     type: String,
     required: true,
-    default: 'Sailor, researcher',
+    default: 'Исследователь',
     minlength: 2,
     maxlength: 30,
   },
