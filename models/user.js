@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
 
+const UnauthorizedError = require('../helpers/errors/unauthorized-error');
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -20,10 +22,13 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     required: true,
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    default:
+      'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(v) {
-        return /[-a-zA-Z0-9@:%_\\+.~#?&\\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\\+.~#?&\\/=]*)?/gi.test(v);
+        return /[-a-zA-Z0-9@:%_\\+.~#?&\\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\\+.~#?&\\/=]*)?/gi.test(
+          v,
+        );
       },
       message: 'Введите корректный url',
     },
@@ -53,15 +58,19 @@ userSchema.methods.toJSON = function hideCredentials() {
   return user;
 };
 
-userSchema.statics.findUserByCredentials = async function findUserByCredentials(email, password) {
+userSchema.statics.findUserByCredentials = async function findUserByCredentials(
+  email,
+  password,
+  next,
+) {
   const user = await this.findOne({ email }).select('+password');
   if (!user) {
-    throw new Error('Неправильные почта или пароль');
+    return next(new UnauthorizedError('Неправильные почта или пароль'));
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error('Неправильные почта или пароль');
+    return next(new UnauthorizedError('Неправильные почта или пароль'));
   }
 
   return user;

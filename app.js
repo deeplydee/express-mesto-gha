@@ -56,10 +56,6 @@ app.use(auth);
 app.use(routes);
 app.use(errors());
 
-app.use((req, res, next) => {
-  next(new NotFoundError('Не найдено'));
-});
-
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
 
@@ -68,4 +64,8 @@ app.use((err, req, res, next) => {
   });
 
   next();
+});
+
+app.use((req, res, next) => {
+  next(new NotFoundError('Не найдено'));
 });
