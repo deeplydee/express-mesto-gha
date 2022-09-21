@@ -5,7 +5,6 @@ const { errors, celebrate, Joi } = require('celebrate');
 
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
-const { NotFoundError } = require('./helpers/errors/not-found-error');
 
 const { PORT = 3000 } = process.env;
 
@@ -61,10 +60,6 @@ app.use(auth);
 
 app.use(routes);
 app.use(errors());
-
-app.use('*', (req, res, next) => {
-  next(new NotFoundError('Не найдено'));
-});
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
