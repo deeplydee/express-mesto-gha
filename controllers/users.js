@@ -16,11 +16,13 @@ const getUserById = async (req, res, next) => { // get '/users/:id'
     const user = await User.findById(id);
     if (!user) {
       next(new NotFoundError('Пользователь по указанному id не найден'));
+      return;
     }
     res.send(user);
   } catch (err) {
     if (err.kind === 'ObjectId') {
       next(new BadRequestError('Невалидный id пользователя'));
+      return;
     }
     next(err);
   }
@@ -58,11 +60,13 @@ const createUser = async (req, res, next) => { // post '/users/'
   } catch (err) {
     if (err.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
-    } else if (err.code === 11000) {
-      next(new ConflictError('Пользователь с таким email уже существует'));
-    } else {
-      next(err);
+      return;
     }
+    if (err.code === 11000) {
+      next(new ConflictError('Пользователь с таким email уже существует'));
+      return;
+    }
+    next(err);
   }
 };
 
@@ -76,14 +80,17 @@ const updateUserProfile = async (req, res, next) => { // patch '/users/me'
     );
     if (!user) {
       next(new NotFoundError('Пользователь с указанным id не найден'));
+      return;
     }
     res.send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
+      return;
     }
     if (err.kind === 'ObjectId') {
       next(new BadRequestError('Невалидный id пользователя'));
+      return;
     }
     next(err);
   }
@@ -99,14 +106,17 @@ const updateUserAvatar = async (req, res, next) => { // patch '/users/me/avatar'
     );
     if (!user) {
       next(new NotFoundError('Пользователь с указанным id не найден'));
+      return;
     }
     res.send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные при обновлении аватара'));
+      return;
     }
     if (err.kind === 'ObjectId') {
       next(new BadRequestError('Невалидный id пользователя'));
+      return;
     }
     next(err);
   }
@@ -135,11 +145,13 @@ const getUserInfo = async (req, res, next) => { // get '/users/me'
     const user = await User.findById({ _id: req.user._id });
     if (!user) {
       next(new NotFoundError('Пользователь по указанному id не найден'));
+      return;
     }
     res.send({ data: user });
   } catch (err) {
     if (err.name === 'CastError') {
       next(new BadRequestError('Переданы некорректные данные'));
+      return;
     }
     next(err);
   }
