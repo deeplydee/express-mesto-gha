@@ -14,7 +14,7 @@ const NotFoundError = require('./helpers/errors/not-found-error');
 
 const app = express();
 
-async function main(next) {
+async function main() {
   try {
     await mongoose.connect('mongodb://localhost:27017/mestodb', {
       useNewUrlParser: true,
@@ -25,7 +25,8 @@ async function main(next) {
     // eslint-disable-next-line no-console
     console.log(`App listening on port ${PORT}`);
   } catch (err) {
-    next(err);
+    // eslint-disable-next-line no-console
+    console.log(err.message);
   }
 }
 
