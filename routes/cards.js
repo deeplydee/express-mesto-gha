@@ -9,6 +9,7 @@ const {
   likeCard,
   dislikeCard,
 } = require('../controllers/cards');
+const { regex } = require('../helpers/constants');
 
 cardRoutes.get('/', getCards);
 
@@ -19,9 +20,7 @@ cardRoutes.post(
       name: Joi.string().required().min(2).max(30),
       link: Joi.string()
         .required()
-        .pattern(
-          /^(https?:\/\/)?([a-zA-z0-9%$&=?/.-]+)\.([a-zA-z0-9%$&=?/.-]+)([a-zA-z0-9%$&=?/.-]+)?(#)?$/,
-        ),
+        .pattern(regex),
     }),
   }),
   createCard,

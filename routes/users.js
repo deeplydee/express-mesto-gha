@@ -9,6 +9,7 @@ const {
   updateUserAvatar,
   getUserInfo,
 } = require('../controllers/users');
+const { regex } = require('../helpers/constants');
 
 userRoutes.get('/', getUsers);
 
@@ -41,9 +42,7 @@ userRoutes.patch(
     body: Joi.object().keys({
       avatar: Joi.string()
         .required()
-        .pattern(
-          /^(https?:\/\/)?([a-zA-z0-9%$&=?/.-]+)\.([a-zA-z0-9%$&=?/.-]+)([a-zA-z0-9%$&=?/.-]+)?(#)?$/,
-        ),
+        .pattern(regex),
     }),
   }),
   updateUserAvatar,

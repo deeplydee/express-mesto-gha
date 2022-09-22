@@ -31,7 +31,7 @@ const createCard = async (req, res, next) => { // post '/cards/'
 
 const deleteCard = async (req, res, next) => { // delete '/cards/:cardId'
   try {
-    const card = await Card.findByIdAndRemove({ _id: req.params.cardId });
+    const card = await Card.findById({ _id: req.params.cardId });
     if (!card) {
       next(new NotFoundError('Карточка с указанным id не найдена'));
       return;
@@ -40,7 +40,8 @@ const deleteCard = async (req, res, next) => { // delete '/cards/:cardId'
       next(new ForbiddenError('Можно удалять только свои карточки'));
       return;
     }
-    res.send({ message: 'Карточка успешно удалена', card });
+    const delCard = await Card.findByIdAndRemove({ _id: req.params.cardId });
+    res.send({ message: 'Карточка успешно удалена', delCard });
   } catch (err) {
     if (err.name === 'CastError') {
       next(new BadRequestError('Переданы некорректные данные для удаления карточки'));
